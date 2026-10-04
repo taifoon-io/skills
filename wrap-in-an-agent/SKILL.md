@@ -35,6 +35,9 @@ The access tools:
 | `taifoon_rpc` | one JSON-RPC read on any served chain |
 | `taifoon_prove` | a proof by kind: `tx`, `log`, `order`, `transition`, `blocks`, `protocols` |
 | `taifoon_access_topup` | the quote (`usdc`), then the credit (`tx` and `signature`); it never signs |
+| `taifoon_chain_lookup` | a block, a transaction or a receipt, with its proof (`explore-chain`) |
+| `taifoon_chain_logs`, `taifoon_account_scan`, `taifoon_scan_job` | logs and an account's events or transactions over a block window, with proofs |
+| `taifoon_transitions` | a protocol's state transitions from the protocol trees |
 
 ## Before you start
 
@@ -82,6 +85,7 @@ mcp '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' | jq -e '[.result.tools[].n
 ```sh
 mcp '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"taifoon_rpc","arguments":{"chain_id":8453,"method":"eth_blockNumber"}}}' | jq -e '.result.content[0].text | fromjson | .result | test("^0x[0-9a-f]+$")' >/dev/null
 mcp '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"taifoon_prove","arguments":{"kind":"protocols"}}}' | jq -e '.result.content[0].text | fromjson | (.protocols | length) > 0' >/dev/null
+mcp '{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"taifoon_chain_lookup","arguments":{"kind":"block","chain_id":8453,"id":"finalized"}}}' | jq -e '.result.content[0].text | fromjson | .proof.verified' >/dev/null
 ```
 
 ### 4. The price list, and what the key used
