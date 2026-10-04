@@ -11,7 +11,7 @@ metadata:
   not_when: "You need a quality verdict on work, or a cross-chain transfer."
   first_call: "GET /v1/proof/tx/{chain}/{tx}"
   success: "proof_state proven with every check true"
-  verified: "2026-10-03"
+  verified: "2026-10-04"
 ---
 
 # Prove a transaction under the superroot
@@ -21,7 +21,7 @@ metadata:
 The layer folds the chains it includes into one superroot about every 10 seconds (`GET /v1/root` lists
 `chains_included`). `GET /v1/proof/tx/{chain}/{tx}` answers where a transaction landed, the superroot that commits to that
 block, whether it is final, a portable V5 proof blob, and `checks` naming what was verified, including that the proof's
-block hash equals the one in the transaction's own receipt. Proofs are free, with per-caller rate limits.
+block hash equals the one in the transaction's own receipt. Proofs are free inside the free rate (90 a minute per key); past it a proof is 0.2 GRID from the key's balance (`GET /v1/access`).
 
 ## Before you start
 
@@ -109,7 +109,7 @@ echo "prove-a-transaction: proven in block $(echo "$PROOF" | jq -r .block_number
 
 ## What it costs
 
-Nothing: `GET /v1/grid/earn` lists a proof at 0 USDC, with per-caller rate limits.
+Inside the free rate, nothing (30 a minute without a key, 90 with a free key). Past it a proof is 0.2 GRID (0.002 USDC) from the key's balance; `GET /v1/access` is the price list, `buy-access` tops a key up. The other proof kinds (log, order, transition, blocks): `prove-anything`.
 
 ## Next
 
