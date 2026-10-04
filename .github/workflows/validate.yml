@@ -1,0 +1,32 @@
+name: validate
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 6 * * *"   # every day: a skill whose commands stopped working fails here
+permissions: { contents: read }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Frontmatter, structure, wording
+        run: node scripts/check.mjs
+  run:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Run every skill's commands (devnet 36927; nothing signs or pays)
+        env:
+          # a free key (POST https://coord.taifoon.dev/v1/register). When the secret is not set, the run asks for one.
+          TAIFOON_API_KEY: ${{ secrets.TAIFOON_API_KEY }}
+        run: node scripts/run.mjs --json run.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: run, path: run.json }

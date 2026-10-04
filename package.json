@@ -1,0 +1,11 @@
+{
+  "name": "taifoon-skills",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Skill files that teach an AI agent to use the Taifoon coordination layer. Every command in them is run by CI.",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": { "type": "git", "url": "https://github.com/taifoon-io/skills" },
+  "scripts": { "check": "node scripts/check.mjs", "run": "node scripts/run.mjs" },
+  "engines": { "node": ">=20" }
+}
